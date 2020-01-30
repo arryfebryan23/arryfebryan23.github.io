@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>News Reader</title>
+    <meta name="description" content="My first PWA" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/materialize.min.css" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#00897B" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navigasi -->
+    <nav class="teal lighten-1" role="navigation">
+        <div class="nav-wrapper container">
+            <a href="./index.html#scorers" data-target="nav-mobile" id="arrow-back">
+                <i class="material-icons">arrow_back</i>
+            </a>
+            <ul class="topnav right hide-on-med-and-down"></ul>
+            <ul class="sidenav" id="nav-mobile"></ul>
+        </div>
+    </nav>
+    <!-- Akhir Navigasi -->
+
+    <div class="container" id="body-content">
+
+
+    </div>
+
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large teal lighten-1" id="save">
+            <i class="large material-icons">save</i>
+        </a>
+    </div>
+
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large teal lighten-1" id="unsave">
+            <i class="large material-icons">delete_forever</i>
+        </a>
+    </div>
+
+    <script type="text/javascript" src="https://unpkg.com/snarkdown@1.0.2/dist/snarkdown.umd.js"></script>
+    <script src="js/materialize.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/idb.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/show-result.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            var id = parseInt(urlParams.get("id"));
+            var isFromSaved = urlParams.get("saved");
+            var btnSave = document.getElementById("save");
+            var btnUnsave = document.getElementById('unsave');
+            var arrowBack = document.getElementById('arrow-back');
+
+            cekData(id, 'players').then(function (message) {
+                console.log(message);
+                btnUnsave.style.display = '';
+                btnSave.style.display = 'none';
+            }).catch(function (message) {
+                console.log(message);
+                btnUnsave.style.display = 'none';
+                btnSave.style.display = '';
+            })
+
+            if (isFromSaved) {
+                // Hide fab jika dimuat dari indexed db
+                btnSave.style.display = 'none';
+                arrowBack.href = './index.html#saved-players';
+                // ambil artikel lalu tampilkan
+                var item = getSavedPlayerById()
+            } else {
+                btnUnsave.style.display = 'none';
+
+                var item = getDetailPlayerById();
+            }
+
+            // Save button
+            btnSave.onclick = function () {
+                console.log("Tombol FAB Save di klik.");
+                item.then(function (players) {
+                    saveData(players, 'players');
+                });
+                location.replace(`players.html?id=${id}`);
+            };
+
+            // Unsave button
+            btnUnsave.onclick = function () {
+                console.log("Tombol FAB Unsave di klik.");
+                let confrm = confirm('kamu beneran mau hapus data ini?');
+
+                if (confrm) {
+                    item.then(function (data) {
+                        deleteDataById(data.id, 'players');
+                    });
+                    location.replace("./index.html#saved-players");
+                }
+            };
+
+
+        });
+
+
+    </script>
+</body>
+
+</html>

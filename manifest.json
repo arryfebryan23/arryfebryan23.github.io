@@ -1,0 +1,17 @@
+{
+    "gcm_sender_id": "990588400775",
+    "name": "Liga Bola Arry",
+    "short_name": "Liga Arry",
+    "description": "Aplikasi PWA Liga Bola Submission 2 Dicoding - Arryfebryan23@gmail.com",
+    "start_url": "/index.html",
+    "display": "standalone",
+    "background_color": "#00897B",
+    "theme_color": "#00897B",
+    "icons": [
+        {
+            "src": "icon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
